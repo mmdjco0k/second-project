@@ -1,17 +1,20 @@
 from .ViewService import ReadViewService , ChangesViewService
 from rest_framework.viewsets import ViewSet , ModelViewSet
 from rest_framework.permissions import IsAuthenticated, AllowAny , IsAuthenticatedOrReadOnly
-from .serializers import ReadPostsSerilizer
+from .serializers import ReadPostSerilizer
 from.models import PostModel
 class ReadPostsView(ModelViewSet):
     queryset = PostModel.objects.all()
-    serializer_class = ReadPostsSerilizer
+    serializer_class = ReadPostSerilizer
     permission_classes = [AllowAny]
 
     def get(self,request):
         response = ReadViewService.ReadPosts(self, request)
         return response
 
+    def retrieve(self , request , pk = None):
+        response = ReadViewService.retrieve(self , request , pk)
+        return response
 class ChangesPosts(ViewSet):
     def create(self , request):
         response = ChangesViewService.CreatePost(self , request)

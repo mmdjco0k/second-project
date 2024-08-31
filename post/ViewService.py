@@ -1,5 +1,5 @@
 from .models import PostModel
-from .serializers import ReadPostsSerilizer  , PostSerializerPartialUpdate
+from .serializers import CreatePostsSerilizer  , PostSerializerPartialUpdate , PostRetrieve , ReadPostSerilizer
 from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
@@ -7,19 +7,23 @@ class ReadViewService:
     @staticmethod
     def ReadPosts(self , request):
         Products = PostModel.objects.all()
-        serializer = ReadPostsSerilizer(Products, many=True, context={'request': request})
+        serializer = ReadPostSerilizer(Products, many=True, context={'request': request})
         data = serializer.data
         for i in data:
             image = i.get("image")
             i["image"] = request.build_absolute_uri(image)
         return Response(data)
-
-
+    @staticmethod
+    def retrieve(self, request, pk):
+        product = get_object_or_404(PostModel, pk=pk)
+        serializer = PostRetrieve(product, context={"request": request})
+        data = serializer.data
+        return Response(data, status=status.HTTP_200_OK)
 class ChangesViewService:
     @staticmethod
     def CreatePost(self , request):
         data = request.data
-        serializer = ReadPostsSerilizer(data=data)
+        serializer = CreatePostsSerilizer(data=data)
         if serializer.is_valid():
             user = request.user
             serializer.validated_data["author"] = user

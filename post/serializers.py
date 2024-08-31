@@ -1,11 +1,27 @@
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import (ModelSerializer , HyperlinkedModelSerializer , HyperlinkedIdentityField)
 from .models import PostModel
 
-class ReadPostsSerilizer(ModelSerializer):
+class CreatePostsSerilizer(ModelSerializer):
     class Meta:
         model = PostModel
         fields = ("slug","description", "status", "image","postId")
 
+
+class ReadPostSerilizer(HyperlinkedModelSerializer):
+    url = HyperlinkedIdentityField(
+        view_name="apipost:detail",
+        lookup_field="pk",
+    )
+    class Meta:
+        model = PostModel
+        fields = ("slug","description", "status", "image","postId" , "url")
+
+
+
+class PostRetrieve(HyperlinkedModelSerializer):
+    class Meta:
+        model = PostModel
+        fields = ("slug","description", "status", "image","postId")
 
 
 class PostSerializerPartialUpdate(ModelSerializer):
