@@ -1,4 +1,4 @@
-from .ViewService import ReadViewService , ChangesViewService
+from .ViewService import ReadViewService , ChangesViewService , LikePosts
 from rest_framework.viewsets import ViewSet , ModelViewSet
 from rest_framework.permissions import IsAuthenticated, AllowAny , IsAuthenticatedOrReadOnly
 from .serializers import ReadPostSerilizer
@@ -27,3 +27,8 @@ class ChangesPosts(ViewSet):
     def delete(self , request , pk):
         response = ChangesViewService.Delete(self  , request , pk)
         return response
+
+class LikePostsView(ViewSet):
+    def post(self , request , pk = None):
+            response = LikePosts.like(request , pk)
+            return response

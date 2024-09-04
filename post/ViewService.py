@@ -1,3 +1,5 @@
+from django.db.models import Count
+
 from .models import PostModel
 from .serializers import CreatePostsSerilizer  , PostSerializerPartialUpdate , PostRetrieve , ReadPostSerilizer
 from rest_framework.response import Response
@@ -6,12 +8,14 @@ from django.shortcuts import get_object_or_404
 class ReadViewService:
     @staticmethod
     def ReadPosts(self , request):
-        Products = PostModel.objects.all()
-        serializer = ReadPostSerilizer(Products, many=True, context={'request': request})
+        posts = PostModel.objects.all()
+        serializer = ReadPostSerilizer(posts, many=True, context={'request': request})
         data = serializer.data
         for i in data:
             image = i.get("image")
             i["image"] = request.build_absolute_uri(image)
+            # likes = i.get("likes").Count
+            # i["likes"] = likes
         return Response(data)
     @staticmethod
     def retrieve(self, request, pk):
@@ -43,3 +47,16 @@ class ChangesViewService:
         post = get_object_or_404(PostModel , pk = pk )
         post.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class LikePosts:
+    @staticmethod
+    def like(request , pk ):
+        post = get_object_or_404(PostModel , pk = pk)
+        user = request.user
+        if user in post.likes.all():
+            post.likes.remove(user)
+            return Response("Removed like.", status=status.HTTP_201_CREATED)
+        else :
+            post.likes.add(user)
+            return Response("add like.", status=status.HTTP_201_CREATED)
