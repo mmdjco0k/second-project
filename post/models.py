@@ -1,8 +1,8 @@
 from django.db import models
 from django.db.models import Q , QuerySet , Manager
 from django.contrib.auth import get_user_model
-
-UserModel = get_user_model()
+from user.models import user
+UserModel = user
 
 class SoftManager(Manager):
     def get_queryset(self):

@@ -8,7 +8,6 @@ class ReadPostsView(ModelViewSet):
     queryset = PostModel.objects.all()
     serializer_class = ReadPostSerilizer
     permission_classes = [AllowAny]
-    filter_backends = (DjangoFilterBackend )
     filterset_fields = ("author" , "postId")
     def get(self,request):
         response = ReadViewService.ReadPosts(self, request)
