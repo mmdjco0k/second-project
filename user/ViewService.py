@@ -11,7 +11,7 @@ class ViewUser:
     def GetList(request):
         try:
             users = user.objects.all()
-            serializer = UserList(users, many=True)
+            serializer = UserList(users , context={'request': request}  , many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except ObjectDoesNotExist:
             return Response({'error': 'No users found'}, status=status.HTTP_404_NOT_FOUND)

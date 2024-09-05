@@ -14,8 +14,6 @@ class ReadViewService:
         for i in data:
             image = i.get("image")
             i["image"] = request.build_absolute_uri(image)
-            # likes = i.get("likes").Count
-            # i["likes"] = likes
         return Response(data)
     @staticmethod
     def retrieve(self, request, pk):

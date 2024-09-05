@@ -5,13 +5,24 @@ from django.conf import settings
 
 
 class UserRetrieveSerializer(HyperlinkedModelSerializer):
+    url = HyperlinkedIdentityField(
+        view_name="apipost:detail",
+        lookup_field="pk",
+    )
+
+    def get_likes(self, obj):
+        likes = obj.likes.count()
+        return likes
+    likes = SerializerMethodField("get_likes")
     author = ReadOnlyField(source="author.username")
     class Meta:
         model = PostModel
-        fields = ("description", "status", "image","postId" , "author" )
+        fields = ("description", "status", "image","postId" , "author" , "url"  , "likes")
 
 class UserList(ModelSerializer):
-    posts = SerializerMethodField()
+    posts = SerializerMethodField("get_posts")
+    url = HyperlinkedIdentityField(view_name="apiuser:detail" , lookup_field="username",)
+
 
     def get_posts(self, obj):
         username = obj
@@ -20,7 +31,7 @@ class UserList(ModelSerializer):
                 'description',
                 'status',
                 'image',
-                'postId'
+                'postId' ,
             )
             for i in posts :
                 i["image"] = f"{settings.SITE_URL}media/{i['image']}"
@@ -28,5 +39,4 @@ class UserList(ModelSerializer):
         return []
     class Meta:
         model = user
-        fields = ["id", "username", "first_name", "last_name", "posts"]
-
+        fields = ["id", "username", "first_name", "last_name" , "url", "posts"]

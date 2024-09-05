@@ -25,9 +25,13 @@ class ReadPostSerilizer(HyperlinkedModelSerializer):
 
 
 class PostRetrieve(HyperlinkedModelSerializer):
+    def get_likes(self ,obj):
+        likes = obj.likes.count()
+        return likes
+    likes = SerializerMethodField("get_likes")
     class Meta:
         model = PostModel
-        fields = ("slug","description", "status", "image","postId")
+        fields = ("slug","description", "status", "image","postId" , "likes")
 
 
 class PostSerializerPartialUpdate(ModelSerializer):
