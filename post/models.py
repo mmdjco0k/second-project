@@ -4,9 +4,12 @@ from django.contrib.auth import get_user_model
 from user.models import user
 UserModel = user
 
+class SoftQuery(QuerySet):
+    def delete(self):
+        self.update(is_deleted=True , status=False,)
 class SoftManager(Manager):
     def get_queryset(self):
-        return QuerySet(self.model , self._db).filter(Q(is_deleted = False) | Q(is_deleted__isnull = True))
+        return SoftQuery(self.model , self._db).filter(Q(is_deleted = False) | Q(is_deleted__isnull = True))
 
 
 class SoftDeleted(models.Model):

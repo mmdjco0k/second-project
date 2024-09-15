@@ -13,13 +13,14 @@ class ReadPostSerilizer(HyperlinkedModelSerializer):
         view_name="apipost:detail",
         lookup_field="pk",
     )
+    like_url = HyperlinkedIdentityField(view_name="apipost:like" , lookup_field="pk")
     def get_likes(self ,obj):
         likes = obj.likes.count()
         return likes
     likes = SerializerMethodField("get_likes")
     class Meta:
         model = PostModel
-        fields = ("slug", "description", "status", "image", "postId", "url" , "likes")
+        fields = ("slug", "description", "status", "image", "postId", "url" , "likes" , "like_url")
 
 
 
