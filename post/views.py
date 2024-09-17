@@ -1,4 +1,4 @@
-from .ViewService import ReadViewService , ChangesViewService , LikePosts
+from .services.ViewService import ReadViewService , ChangesViewService , LikePosts
 from rest_framework.viewsets import ViewSet , ModelViewSet
 from rest_framework.permissions import  AllowAny
 from .serializers import ReadPostSerilizer
