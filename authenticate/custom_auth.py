@@ -2,14 +2,12 @@ import time
 import jwt
 from django.conf import settings
 from django.http import HttpResponse
-from rest_framework.exceptions import  PermissionDenied
 from user.models import user
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken
 
+
 secret_key = settings.SECRET_KEY
-
-
 
 
 class CustomAuthentication(JWTAuthentication):
@@ -21,7 +19,7 @@ class CustomAuthentication(JWTAuthentication):
         if token:
             validated_token = self.validate(token, request)
             if not validated_token:
-                raise PermissionDenied("User not authenticated.")
+                return None
             return self.get_user_custom(validated_token), validated_token
         else:
             return None
@@ -33,8 +31,12 @@ class CustomAuthentication(JWTAuthentication):
                 return self.get_refreshed_token(request)
             else:
                 return token
+
         except jwt.ExpiredSignatureError:
-            return self.get_refreshed_token(request)
+                try:
+                    return self.get_refreshed_token(request)
+                except jwt.ExpiredSignatureError:
+                    return False
 
     def get_user_custom(self, validated_token):
         token_decoded = jwt.decode(validated_token, secret_key, algorithms=["HS256"])
