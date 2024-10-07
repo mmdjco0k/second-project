@@ -9,17 +9,6 @@ from rest_framework.views import APIView
 from .serializer import LoginSerializer, EmailVerifySerializers
 from .services.otp import OtpService
 from .models import OtpModel
-class CustomTokenObtainPairView(TokenObtainPairView):
-    authentication_class = CustomAuthentication
-
-    def post(self, request, *args, **kwargs):
-        response = super().post(request, *args, **kwargs)
-        token = response.data.get('access')
-        http_response = HttpResponse()
-        http_response.set_cookie('access', token, httponly=True, domain="127.0.0.1", path="/", secure=False)
-        refresh_token = response.data.get('refresh')
-        http_response.set_cookie('refresh', refresh_token, httponly=True)
-        return http_response
 
 class CustomLoginWithRegisterCode(APIView):
     CustomUser = get_user_model()
