@@ -1,17 +1,18 @@
 from datetime import timedelta
 from pathlib import Path
 import os
+from decouple import config
 
 
 print("base")
 
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent
 
 
 SECRET_KEY = NotImplemented
 
-DEBUG = False
+DEBUG = os.environ.get("DEBUG" , True)
 
 ALLOWED_HOSTS = ["*"]
 
@@ -48,7 +49,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -60,6 +61,7 @@ TEMPLATES = [
         },
     },
 ]
+
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
@@ -121,13 +123,14 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated'
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'authenticate.services.custom_auth.CustomAuthentication',
+        'authenticate.custom_auth.CustomAuthentication',
     ],
 
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
     ),
 }
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR , "media")
 
@@ -138,5 +141,28 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 }
 
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/0",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient"
+        },
+    }
+}
 
+CACHE_LOCATION = config('CACHE_LOCATION', default='redis://localhost:6379/0')
+if CACHE_LOCATION is None:
+    raise ValueError('CACHE_LOCATION not provided.')
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'mohamadreza619ps4@gmail.com'
+EMAIL_HOST_PASSWORD = "ibxq ysdw gqmp tebv"
+DEFAULT_FORM_USER = "mohamadreza619ps4@gmail.com"
+
+CELERY_BROKER_URL = CACHE_LOCATION
+CELERY_RESULT_BACKEND = CACHE_LOCATION
 
