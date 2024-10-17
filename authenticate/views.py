@@ -9,7 +9,7 @@ from rest_framework.views import APIView
 from .serializer import LoginSerializer, EmailVerifySerializers
 from .services.otp import OtpService
 from .models import OtpModel
-
+from .services.token import TokenService
 class CustomLoginWithRegisterCode(APIView):
     CustomUser = get_user_model()
     permission_classes = [AllowAny]
@@ -28,27 +28,23 @@ class CustomLoginWithRegisterCode(APIView):
         else :  return Response(serializer.errors, status=status.HTTP_200_OK)
 
 
-class EmailLoginVerifyAPIView(TokenObtainPairView):
+class EmailLoginVerifyAPIView(APIView):
     permission_classes = [AllowAny]
     authentication_class = CustomAuthentication
 
     CustomUser = get_user_model()
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request):
         serializer = EmailVerifySerializers(data=request.data)
 
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
         username = serializer.validated_data['username']
         user = self.CustomUser.objects.filter(username=username).first()
-
-        if not user:
-            return Response({'detail': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
-
+        if user is None:
+            return Response({'detail': 'OTP Not Exists'}, status=status.HTTP_404_NOT_FOUND)
         email = user.email
         otp_code = serializer.validated_data.get('code')
-
         user_obj = OtpService.verify(code=otp_code, email=email)
 
         if not user_obj:
@@ -58,10 +54,8 @@ class EmailLoginVerifyAPIView(TokenObtainPairView):
             email=email,
         ).delete()
 
-        response = super().post(request, *args, **kwargs)
-        token = response.data.get('access')
+        access, refresh = TokenService.generate(user_obj)
         http_response = HttpResponse()
-        http_response.set_cookie('access', token, httponly=True, domain="127.0.0.1", path="/", secure=False)
-        refresh_token = response.data.get('refresh')
-        http_response.set_cookie('refresh', refresh_token, httponly=True)
+        http_response.set_cookie('access', access, httponly=True, domain="127.0.0.1", path="/", secure=False)
+        http_response.set_cookie('refresh', refresh, httponly=True)
         return http_response
