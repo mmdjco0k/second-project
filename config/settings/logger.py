@@ -35,6 +35,11 @@ LOGGING = {
             'backupCount': 5,
             'maxBytes': 1024 * 1024 * 5,  # 5 MB
         },
+        'django_queries_file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': f'{BASE_DIR}/logs/django_queries.log',
+        },
     },
     'loggers': {
         '': {
@@ -52,8 +57,10 @@ LOGGING = {
             'propagate': False,
         },
         'django.db.backends': {
-            'handlers': ['console', 'file'],
-            'level': 'INFO',
+            'handlers': [#'console',
+                'file', 'django_queries_file'],
+
+            'level': 'DEBUG',
             'propagate': False,
         },
         'django.template': {
