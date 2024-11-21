@@ -1,7 +1,7 @@
 from datetime import timedelta
 from pathlib import Path
 import os
-
+from constance import config
 
 print("base")
 
@@ -23,6 +23,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'constance',
+    'constance.backends.database',
     "post",
     "user.apps.UserConfig",
     'rest_framework',
@@ -32,15 +34,33 @@ INSTALLED_APPS = [
     "authenticate",
     "django_extensions",
 ]
+
+CONSTANCE_BACKEND = 'constance.backends.redisd.RedisBackend'
+
+CONSTANCE_SUPERUSER_ONLY = False
+
+CONSTANCE_CONFIG = {
+    'IS_UPDATING': (False , 'Is the site currently updating?', bool),
+}
+
+# is_updating = config.is_updating
 AUTH_USER_MODEL = 'user.user'
+
+CONSTANCE_REDIS_CONNECTION = {
+    'host': 'localhost',
+    'port': 6379,
+    'db': 0,
+}
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'config.middleware.SiteUpdatingMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
 ]
 
 ROOT_URLCONF = 'config.urls'
