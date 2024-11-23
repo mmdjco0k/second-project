@@ -147,6 +147,11 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
     ),
+
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '50/day',
+        'user':'1000/day'
+    }
 }
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR , "media")

@@ -1,3 +1,5 @@
+from rest_framework.throttling import UserRateThrottle, AnonRateThrottle
+
 from .services.ViewService import ReadViewService , ChangesViewService , LikePosts
 from rest_framework.viewsets import ViewSet , ModelViewSet
 from rest_framework.permissions import  AllowAny
@@ -8,6 +10,7 @@ import logging
 class ReadPostsView(ModelViewSet):
     queryset = PostModel.objects.all()
     serializer_class = ReadPostSerilizer
+    throttle_classes = [UserRateThrottle , AnonRateThrottle]
     permission_classes = [AllowAny]
     filterset_fields = ("author" , "postId")
     def get(self,request):
@@ -19,6 +22,8 @@ class ReadPostsView(ModelViewSet):
         return response
 
 class ChangesPosts(ViewSet):
+    throttle_classes = [UserRateThrottle]
+
     def create(self , request):
         response = ChangesViewService.CreatePost(self , request)
         return  response
@@ -31,6 +36,7 @@ class ChangesPosts(ViewSet):
         return response
 
 class LikePostsView(ViewSet):
+    throttle_classes = [UserRateThrottle]
     def post(self , request , pk = None):
             response = LikePosts.like(request , pk)
             return response
