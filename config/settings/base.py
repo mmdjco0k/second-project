@@ -9,12 +9,12 @@ print("base")
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-SECRET_KEY = NotImplemented
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
-DEBUG = False
+DEBUG = bool(os.environ.get("DEBUG", default=0))
 
+# ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 ALLOWED_HOSTS = ["*"]
-
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -34,10 +34,19 @@ INSTALLED_APPS = [
     "authenticate",
     "django_extensions",
 ]
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': [
+            'redis://127.0.0.1:6379/0',
+        ],
+    }
+}
 
 CONSTANCE_BACKEND = 'constance.backends.redisd.RedisBackend'
-
+CONSTANCE_REDIS_CACHE_TIMEOUT = 300
 CONSTANCE_SUPERUSER_ONLY = False
+
 
 CONSTANCE_CONFIG = {
     'IS_UPDATING': (False , 'Is the site currently updating?', bool),
@@ -89,14 +98,13 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': "django_posts",
-        "USER": "postgres",
-        "PASSWORD": "2077",
-        "HOST": "localhost",
-        "PORT": "5432",
-
+    "default": {
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": os.environ.get("SQL_DATABASE", BASE_DIR / "db.sqlite3"),
+        "USER": os.environ.get("SQL_USER", "user"),
+        "PASSWORD": os.environ.get("SQL_PASSWORD", "password"),
+        "HOST": os.environ.get("SQL_HOST", "localhost"),
+        "PORT": os.environ.get("SQL_PORT", "5432"),
     }
 }
 
