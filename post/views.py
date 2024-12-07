@@ -7,7 +7,7 @@ from .serializers import ReadPostSerilizer
 from.models import PostModel
 import logging
 
-class ReadPostsView(ModelViewSet):
+class ReadPostsView(ViewSet):
     queryset = PostModel.objects.all()
     serializer_class = ReadPostSerilizer
     throttle_classes = [UserRateThrottle , AnonRateThrottle]

@@ -4,7 +4,7 @@ from .views import ReadPostsView , ChangesPosts , LikePostsView
 app_name = 'apipost'
 
 urlpatterns =[
-    path('posts/', ReadPostsView.as_view({'get': 'list'}), name = "list"),
+    path('posts/', ReadPostsView.as_view({'get': 'get'}), name = "list"),
     path('posts/<int:pk>/', ReadPostsView.as_view({"get":"retrieve"}), name = "detail"),
     path('posts/create/', ChangesPosts.as_view({'post': 'create'}), name="create"),
     path('posts/<int:pk>/update/',ChangesPosts.as_view({"patch":"update"}),name="update" ),
