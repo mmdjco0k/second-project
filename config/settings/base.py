@@ -4,7 +4,9 @@ import os
 from constance import config
 
 print("base")
+import django.utils.translation as original_translation
 
+original_translation.ugettext_lazy = original_translation.gettext_lazy
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -13,7 +15,6 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 
 DEBUG = bool(os.environ.get("DEBUG", default=0))
 
-# ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 ALLOWED_HOSTS = ["*"]
 
 INSTALLED_APPS = [
