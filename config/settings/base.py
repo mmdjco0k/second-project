@@ -158,7 +158,7 @@ REST_FRAMEWORK = {
     ),
 
     'DEFAULT_THROTTLE_RATES': {
-        'anon': '50/day',
+        'anon': '100/day',
         'user':'1000/day'
     }
 }
@@ -173,4 +173,6 @@ SIMPLE_JWT = {
 }
 
 
-
+TEST_SUPERUSER_USERNAME = "admin"
+TEST_SUPERUSER_EMAIL = "admin@example.com"
+TEST_SUPERUSER_PASSWORD = "secure_password"
