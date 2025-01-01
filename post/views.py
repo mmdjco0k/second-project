@@ -4,11 +4,11 @@ from .services.ViewService import ReadViewService , ChangesViewService , LikePos
 from rest_framework.viewsets import ViewSet , ModelViewSet
 from rest_framework.permissions import  AllowAny
 from .serializers import ReadPostSerilizer
-from.models import PostModel
+from.models import Post
 import logging
 
 class ReadPostsView(ViewSet):
-    queryset = PostModel.objects.all()
+    queryset = Post.objects.all()
     serializer_class = ReadPostSerilizer
     throttle_classes = [UserRateThrottle , AnonRateThrottle]
     permission_classes = [AllowAny]

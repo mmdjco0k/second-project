@@ -1,5 +1,5 @@
 from django.core.exceptions import ObjectDoesNotExist
-from post.models import PostModel
+from post.models import Post
 from .serializers import UserRetrieveSerializer
 from rest_framework.response import Response
 from rest_framework import status
@@ -19,8 +19,8 @@ class ViewUser:
     @staticmethod
     def Retrieve(request , slug):
         try:
-            posts = PostModel.objects.filter(author__username=slug)
+            posts = Post.objects.filter(author__username=slug)
             serialized_posts = UserRetrieveSerializer(posts, many=True ,context={'request': request}).data
             return Response(serialized_posts, status=status.HTTP_200_OK)
-        except PostModel.DoesNotExist:
+        except Post.DoesNotExist:
             return Response({'error': 'No posts found for this user'}, status=status.HTTP_404_NOT_FOUND)

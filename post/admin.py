@@ -1,11 +1,11 @@
 from django.contrib import admin
-from .models import PostModel , RecyclePost
+from .models import Post , RecyclePost
 
 class PostAdmin(admin.ModelAdmin):
         list_display = ('postId', 'description', 'slug', 'likes_count', 'author', 'status')
         def likes_count(self, obj):
             return obj.likes.count()
-admin.site.register(PostModel, PostAdmin)
+admin.site.register(Post, PostAdmin)
 
 
 @admin.register(RecyclePost)

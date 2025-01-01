@@ -1,10 +1,10 @@
 from rest_framework.serializers import (ModelSerializer , HyperlinkedModelSerializer , HyperlinkedIdentityField , IntegerField , SerializerMethodField)
-from .models import PostModel
+from .models import Post
 from django.db.models import Count
 
 class CreatePostsSerilizer(ModelSerializer):
     class Meta:
-        model = PostModel
+        model = Post
         fields = ("slug","description", "status", "image","postId")
 
 
@@ -19,7 +19,7 @@ class ReadPostSerilizer(HyperlinkedModelSerializer):
         return likes
     likes = SerializerMethodField("get_likes")
     class Meta:
-        model = PostModel
+        model = Post
         fields = ("slug", "description", "status", "image", "postId", "url" , "likes" , "like_url")
 
 
@@ -31,13 +31,13 @@ class PostRetrieve(HyperlinkedModelSerializer):
         return likes
     likes = SerializerMethodField("get_likes")
     class Meta:
-        model = PostModel
+        model = Post
         fields = ("slug","description", "status", "image","postId" , "likes")
 
 
 class PostSerializerPartialUpdate(ModelSerializer):
     class Meta:
-        model = PostModel
+        model = Post
         fields = ("slug", "description", "status", "image" , "postId")
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

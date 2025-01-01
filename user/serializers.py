@@ -1,5 +1,5 @@
 from rest_framework.serializers import HyperlinkedModelSerializer , HyperlinkedIdentityField , ReadOnlyField , ModelSerializer , SerializerMethodField
-from post.models import PostModel
+from post.models import Post
 from .models import user
 from django.conf import settings
 
@@ -16,7 +16,7 @@ class UserRetrieveSerializer(HyperlinkedModelSerializer):
     likes = SerializerMethodField("get_likes")
     author = ReadOnlyField(source="author.username")
     class Meta:
-        model = PostModel
+        model = Post
         fields = ("description", "status", "image","postId" , "author" , "url"  , "likes")
 
 class UserList(ModelSerializer):
@@ -27,7 +27,7 @@ class UserList(ModelSerializer):
     def get_posts(self, obj):
         username = obj
         if username:
-            posts = PostModel.objects.filter(author__username=username).values(
+            posts = Post.objects.filter(author__username=username).values(
                 'description',
                 'status',
                 'image',
