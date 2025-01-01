@@ -2,7 +2,7 @@ import factory
 import pytest
 from rest_framework.permissions import AllowAny
 from rest_framework.reverse import reverse
-from sec_project.post.tests.factories import PostFactory
+from .factories import PostFactory
 
 
 @pytest.mark.parametrize(
